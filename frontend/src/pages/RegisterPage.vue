@@ -1,78 +1,148 @@
 <template>
-  <div class="auth-wrapper">
-    <div class="auth-card">
-      <div class="auth-header">
-        <h1>Someri</h1>
-        <p>Create your account</p>
-      </div>
-
-      <form @submit.prevent="handleRegister" class="auth-form">
-        <div class="field">
-          <label>Email</label>
-          <input
-            v-model="email"
-            type="email"
-            placeholder="you@example.com"
-            required
-            autocomplete="email"
-          />
+  <GridBackground>
+    <div class="auth-wrapper">
+      <div class="auth-card"
+        @mousemove="handleGlow"
+        :style="{
+          '--mouse-x': mouseX + 'px',
+          '--mouse-y': mouseY + 'px',
+        }"
+      >
+        <div class="auth-header">
+          <h1>Someri</h1>
+          <p>Create your account</p>
         </div>
 
-        <div class="field">
-          <label>Password</label>
-          <input
-            v-model="password"
-            type="password"
-            placeholder="Min. 6 characters"
-            required
-            autocomplete="new-password"
-          />
-        </div>
+        <form 
+          @submit.prevent="handleRegister" class="auth-form">
+          <div class="field">
+            <label class="floating-label">Email</label>
+            <input
+              v-model="email"
+              type="email"
+              required
+              autocomplete="email"
+              @focus="floatLabel($event, true)"
+              @blur="floatLabel($event, false)"
+            />
+          </div>
 
-        <p v-if="auth.error" class="error">{{ auth.error }}</p>
+          <div class="field">
+            <label class="floating-label">Password</label>
+            <input
+              v-model="password"
+              type="password"
+              required
+              autocomplete="new-password"
+              @focus="floatLabel($event, true)"
+              @blur="floatLabel($event, false)"
+            />
+          </div>
 
-        <button type="submit" :disabled="auth.loading">
-          {{ auth.loading ? 'Creating account...' : 'Register' }}
+          <p v-if="auth.error" class="error">{{ auth.error }}</p>
+
+          <button type="submit" :disabled="auth.loading">
+            {{ auth.loading ? 'Creating account...' : 'Register' }}
+          </button>
+        </form>
+
+        <p class="auth-footer">
+          Already have an account?
+          <RouterLink to="/login">Sign in</RouterLink>
+        </p>
+
+        <button class="theme-toggle" @click="theme.toggle()" :title="theme.isDark ? 'Switch to light mode' : 'Switch to dark mode'">
+          {{ theme.isDark ? '☀️' : '🌙' }}
         </button>
-      </form>
-
-      <p class="auth-footer">
-        Already have an account?
-        <RouterLink to="/login">Sign in</RouterLink>
-      </p>
+      </div>
     </div>
-  </div>
+  </GridBackground>
 </template>
 
 <script setup lang="ts">
+import GridBackground from '../components/ui/GridBackground.vue';
 import { ref } from 'vue';
 import { useAuthStore } from '../stores/auth';
+import { animate } from 'motion';
+import { useThemeStore } from '../stores/theme';
 
 const auth = useAuthStore();
 const email = ref('');
 const password = ref('');
+const theme = useThemeStore();
 
 async function handleRegister() {
   await auth.register(email.value, password.value);
 }
+
+function floatLabel(e: FocusEvent | Event, up: boolean) {
+  const input = e.target as HTMLInputElement;
+  const label = input.previousElementSibling as HTMLElement;
+  const filled = input.value.length > 0;
+
+  if (up || filled) {
+    animate(label, { y: -40, scale: 0.82, color: 'var(--color-primary)' }, { duration: 0.2 });
+  } else {
+    animate(label, { y: 0, scale: 1, color: 'var(--color-text-muted)' }, { duration: 0.2 });
+  }
+}
+
+const mouseX = ref(0);
+const mouseY = ref(0);
+
+function handleGlow(e: MouseEvent) {
+  const target = e.currentTarget as HTMLElement;
+  const rect = target.getBoundingClientRect();
+
+  mouseX.value = e.clientX - rect.left;
+  mouseY.value = e.clientY - rect.top;
+}
 </script>
 
 <style scoped>
+
+.theme-toggle {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  /* border: 1px solid var(--color-border); */
+  background: var(--color-surface);
+  cursor: pointer;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow);
+  transition: background 0.2s;
+  padding: 0;
+}
+
+.theme-toggle:hover:not(:disabled) {
+  background: var(--color-bg);
+}
+
 .auth-wrapper {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f5f5f5;
+  /* background: var(--color-bg); */
+  border: none;
 }
 
 .auth-card {
-  background: white;
+  position: relative;
+  background: var(--color-surface);
   padding: 2.5rem;
   border-radius: 12px;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow);
   width: 100%;
   max-width: 400px;
+  overflow: hidden;
+  isolation: isolate;
 }
 
 .auth-header {
@@ -84,60 +154,94 @@ async function handleRegister() {
   font-size: 1.8rem;
   font-weight: 700;
   margin-bottom: 0.25rem;
+  color: var(--color-text);
 }
 
 .auth-header p {
-  color: #666;
+  color: var(--color-text-muted);
   font-size: 0.95rem;
 }
 
-.auth-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
+.auth-form { 
+  display: flex; 
+  flex-direction: column; 
+  gap: 1.25rem; 
+}
+
+.auth-form::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+
+  background:
+    radial-gradient(
+      220px circle at var(--mouse-x) var(--mouse-y),
+      color-mix(in srgb, var(--color-primary) 18%, transparent),
+      transparent 70%
+    );
+
+  transition: background 0.08s linear;
+}
+
+.auth-form > * {
+  position: relative;
+  z-index: 1;
 }
 
 .field {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
+  position: relative;
+  padding-top: 1rem;
 }
 
-.field label {
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: #333;
+.floating-label {
+  position: absolute;
+  top: 1.5rem;
+  left: 0.9rem;
+  font-size: 0.95rem;
+  color: var(--color-text-muted);
+  pointer-events: none;
+  transform-origin: left center;
 }
 
 .field input {
+  width: 100%;
   padding: 0.65rem 0.9rem;
-  border: 1px solid #ddd;
+  border: 1px solid var(--color-border);
   border-radius: 8px;
   font-size: 0.95rem;
   outline: none;
+  background: var(--color-bg);
+  color: var(--color-text);
   transition: border-color 0.2s;
+  box-sizing: border-box;
 }
 
 .field input:focus {
-  border-color: #000;
+  border-color: var(--color-border-focus);
 }
 
 .error {
-  color: #e53e3e;
+  color: var(--color-error);
   font-size: 0.875rem;
   text-align: center;
 }
 
 button {
   padding: 0.75rem;
-  background: #000;
+  background: var(--color-primary);
   color: white;
   border: none;
   border-radius: 8px;
   font-size: 0.95rem;
   font-weight: 500;
   cursor: pointer;
-  transition: opacity 0.2s;
+  transition: background 0.2s;
+}
+
+button:hover:not(:disabled) {
+  background: var(--color-primary-hover);
 }
 
 button:disabled {
@@ -149,11 +253,11 @@ button:disabled {
   text-align: center;
   margin-top: 1.5rem;
   font-size: 0.875rem;
-  color: #666;
+  color: var(--color-text-muted);
 }
 
 .auth-footer a {
-  color: #000;
+  color: var(--color-primary);
   font-weight: 500;
   text-decoration: none;
 }
