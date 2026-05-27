@@ -1,0 +1,46 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider     = "mysql"
+  relationMode = "prisma"
+}
+
+model User {
+  id        String     @id @default(uuid())
+  email     String     @unique @db.VarChar(255)
+  password  String     @db.VarChar(255)
+  createdAt DateTime   @default(now())
+
+  documents Document[]
+}
+
+model Document {
+  id            String   @id @default(uuid())
+  userId        String
+  filename      String   @db.VarChar(255)
+  originalName  String   @db.VarChar(255)
+  status        Status   @default(PENDING)
+  extractedText String?  @db.LongText
+  createdAt     DateTime @default(now())
+
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  summary Summary?
+}
+
+model Summary {
+  id         String   @id @default(uuid())
+  documentId String   @unique
+  content    String   @db.LongText
+  createdAt  DateTime @default(now())
+
+  document Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+}
+
+enum Status {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}

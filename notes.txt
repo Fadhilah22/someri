@@ -1,0 +1,16 @@
+
+
+
+what is this for?
+	- make summary given documents, summary generated shall be pretty and appropriate for studying.
+
+mvp:
+	1. Authentication
+	2. Summarize 
+		- Upload pdf
+		- extract text and metadata
+		- summary
+		- store summarization
+	3. Manage summarized docs
+		- export Summary
+	4. [Nice to have] Dashboard Analytics
