@@ -162,7 +162,6 @@ function handleGlow(e: MouseEvent) {
   font-size: 0.95rem;
 }
 
-
 .auth-form { 
   display: flex; 
   flex-direction: column; 
