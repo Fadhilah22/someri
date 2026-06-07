@@ -9,16 +9,11 @@
 </template>
 
 <script setup lang="ts">
+import type { SummaryDisplay } from '../../types/index.ts';
 import SummaryCard from './SummaryCard.vue'
 
-interface Summary {
-    id: string
-    title: string
-    createdAt: string
-}
-
 defineProps<{
-    summaries: Summary[]
+    summaries: SummaryDisplay[]
 }>()
 </script>
 

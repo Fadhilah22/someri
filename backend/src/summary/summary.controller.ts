@@ -2,6 +2,9 @@
 import {
     Body,
     Controller,
+    Delete,
+    Get,
+    Param,
     Post,
 } from '@nestjs/common';
 
@@ -29,6 +32,22 @@ export class SummaryController {
         )
         return this.summaryService.createSummary(
             dto,
+        );
+    }
+
+    @Post()
+    async getSummaries(
+        @Body('documentIds') documentIds: string[],
+    ) {
+        return this.summaryService.getSummaries(documentIds);
+    }
+
+    @Delete(':id/delete')
+    async deleteSummary(
+        @Param('id') id:string,
+    ){
+        return this.summaryService.deleteSummary(
+            id
         );
     }
 }

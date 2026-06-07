@@ -3,6 +3,7 @@ import {
     Body, 
     Controller, 
     FileTypeValidator, 
+    Get, 
     ParseFilePipe, 
     Post, 
     Request, 
@@ -24,7 +25,7 @@ export class DocumentController {
     @Post()
     @UseInterceptors(FileInterceptor('file'))
     @ApiBearerAuth()
-    create(
+    async create(
         @UploadedFile(
             new ParseFilePipe({
             validators: [
@@ -47,5 +48,12 @@ export class DocumentController {
             filename,
             req.user.sub
         );
+    }
+
+    @UseGuards(AuthGuard)
+    @Get()
+    async getDocuments(@Request() req: any){
+        console.log("User Id requests document: ", req.user.sub);
+        return this.documentService.getDocuments(req.user.sub);
     }
 }

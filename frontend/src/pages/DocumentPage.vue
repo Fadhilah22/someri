@@ -26,37 +26,20 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 
 import DocumentList from '@/components/DocumentCompo/DocumentList.vue'
 import UploadDocumentModal from '@/components/DocumentCompo/UploadDocumentModal.vue'
-import { uploadDocument } from '../services/documents'
-
-interface Document {
-    id: string
-    originalName: string
-    createdAt: string
-}
+import { getDocuments, uploadDocument } from '../services/documents'
+import type { Document } from '../types'
 
 const showUploadModal = ref(false)
 
-const documents = ref<Document[]>([
-    {
-        id: '1',
-        originalName: 'Medical-RAG.pdf',
-        createdAt: '2026-06-01'
-    },
-    {
-        id: '2',
-        originalName: 'Machine-Learning-Notes.pdf',
-        createdAt: '2026-06-02'
-    },
-    {
-        id: '3',
-        originalName: 'Database-System.pdf',
-        createdAt: '2026-06-03'
-    }
-])
+const documents = ref<Document[]>([])
+
+async function loadDocuments() {
+    documents.value = await getDocuments();
+}
 
 async function handleUpload(payload: {
     filename: string
@@ -76,6 +59,11 @@ async function handleUpload(payload: {
         console.error(error)
     }
 }
+
+onMounted(() => {
+    console.log("loads page.");
+    loadDocuments();
+})
 </script>
 
 <style scoped>

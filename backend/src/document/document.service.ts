@@ -39,4 +39,23 @@ export class DocumentService {
                 throw error;
         }
     }
+
+    async getDocuments(userId: string){
+        return this.prisma.document.findMany({
+            where: {
+                userId: userId,
+            },
+            include: {
+                summary: true,
+            },
+        });
+    }
+
+    async getDocumentById(id: string) {
+        return this.prisma.document.findMany({
+            where: {
+                id,
+            },
+        });
+    }
 }

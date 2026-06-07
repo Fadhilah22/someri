@@ -26,26 +26,30 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 
 import SummaryList from '@/components/SummaryCompo/SummaryList.vue'
 import GenerateSummaryModal from '@/components/SummaryCompo/GenerateSummaryModal.vue'
 import { generateSummary } from '../services/summary'
+import { getDocuments } from '../services/documents'
+import type { Document, SummaryDisplay } from '../types'
 
 const showGenerateModal = ref(false)
 
-const summaries = ref([
-    {
-        id: '1',
-        title: 'Medical RAG Summary',
-        createdAt: '2026-06-01'
-    },
-    {
-        id: '2',
-        title: 'Machine Learning Notes Summary',
-        createdAt: '2026-06-02'
-    }
-])
+const documents = ref<Document[]>([])
+
+const summaries = computed<SummaryDisplay[]>(() => {
+    return documents.value.flatMap(doc =>
+        doc.summary.map(summary => ({
+            ...summary,
+            documentName: doc.originalName
+        }))
+    )
+})
+
+async function loadDocuments() {
+    documents.value = await getDocuments();
+}
 
 async function handleGenerate(payload: {
     documentId: string
@@ -58,12 +62,12 @@ async function handleGenerate(payload: {
     try {
         // await generateSummary(...)
         await generateSummary(
-          payload.documentId,
-          payload.style,
-          payload.length,
-          payload.language,
-          1,
-          1,
+            payload.documentId,
+            payload.style,
+            payload.length,
+            payload.language,
+            1,
+            1,
         )
 
         showGenerateModal.value = false
@@ -71,6 +75,11 @@ async function handleGenerate(payload: {
         console.error(error)
     }
 }
+
+onMounted(() => {
+    console.log("loads page.");
+    loadDocuments();
+})
 </script>
 
 <style scoped>

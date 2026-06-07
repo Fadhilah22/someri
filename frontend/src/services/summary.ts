@@ -25,8 +25,10 @@ export async function generateSummary(
     return data
 }
 
-export async function getSummary() {
-    const { data } = await api.get('/summary')
+export async function getSummary(documentIds: string[]) {
+    const { data } = await api.post('/summary', {
+        documentIds,
+    });
 
-    return data
+    return data;
 }

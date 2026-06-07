@@ -1,22 +1,22 @@
 <template>
     <div class="card">
-        <h3>{{ summary.title }}</h3>
+        <h3>{{ summary.documentName }}</h3>
 
-        <p>
+        <!-- <p class="content">
+            {{ summary.content }}
+        </p> -->
+
+        <p class="date">
             {{ formatDate(summary.createdAt) }}
         </p>
     </div>
 </template>
 
 <script setup lang="ts">
-interface Summary {
-    id: string
-    title: string
-    createdAt: string
-}
+import type { SummaryDisplay } from '../../types'
 
 defineProps<{
-    summary: Summary
+    summary: SummaryDisplay
 }>()
 
 function formatDate(date: string) {

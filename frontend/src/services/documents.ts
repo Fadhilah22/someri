@@ -5,21 +5,24 @@ export async function uploadDocument(
     file: File,
 ) {
     console.log('[API] Upload Document');
-    const formData = new FormData()
+    const formData = new FormData();
 
-    formData.append('filename', filename)
-    formData.append('file', file)
+    formData.append('filename', filename);
+    formData.append('file', file);
 
     const { data } = await api.post(
         '/document',
         formData,
-    )
+    );
 
-    return data
+    return data;
 }
 
 export async function getDocuments() {
-    const { data } = await api.get('/document')
+    
+    const { data } = await api.get(
+        '/document'
+    );
 
     return data
 }
