@@ -16,7 +16,16 @@
         </button>
     </section>
 
-    <SummaryList :summaries="summaries" />
+    <SummaryList 
+        :summaries="summaries"
+        @select="openSummary"
+    />
+
+    <SummaryDetailModal
+        v-if="showDetailModal"
+        :summary="selectedSummary"
+        @close="showDetailModal = false"
+    />
 
     <GenerateSummaryModal
         v-if="showGenerateModal"
@@ -30,9 +39,13 @@ import { computed, onMounted, ref } from 'vue'
 
 import SummaryList from '@/components/SummaryCompo/SummaryList.vue'
 import GenerateSummaryModal from '@/components/SummaryCompo/GenerateSummaryModal.vue'
+import SummaryDetailModal from '@/components/SummaryCompo/SummaryDetailModal.vue'
 import { generateSummary } from '../services/summary'
 import { getDocuments } from '../services/documents'
 import type { Document, SummaryDisplay } from '../types'
+
+const selectedSummary = ref<SummaryDisplay | null>(null)
+const showDetailModal = ref(false)
 
 const showGenerateModal = ref(false)
 
@@ -46,6 +59,11 @@ const summaries = computed<SummaryDisplay[]>(() => {
         }))
     )
 })
+
+function openSummary(summary: SummaryDisplay) {
+    selectedSummary.value = summary
+    showDetailModal.value = true
+}
 
 async function loadDocuments() {
     documents.value = await getDocuments();

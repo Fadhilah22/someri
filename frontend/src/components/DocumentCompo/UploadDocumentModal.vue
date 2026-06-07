@@ -1,7 +1,16 @@
 <template>
 <div class="overlay">
     <div class="modal">
-        <h2>Upload Document</h2>
+        <div class="header">
+            <h2>Upload Document</h2>
+
+            <button
+                class="close-btn"
+                @click="$emit('close')"
+            >
+                ✕
+            </button>
+        </div>
 
         <div class="field">
             <label>Document Name</label>
@@ -134,5 +143,18 @@ function upload() {
 
 .secondary {
     background: var(--color-background);
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-bottom: 12px;
+}
+
+.header h2 {
+    margin: 0;
+    color: var(--color-text);
 }
 </style>

@@ -32,3 +32,28 @@ export async function getSummary(documentIds: string[]) {
 
     return data;
 }
+
+export async function deleteSummary(id: string) {
+    return api.delete(`/summary/${id}/delete`);
+}
+
+export async function downloadSummaryPdf(
+    summaryId: string,
+    documentName: string,
+): Promise<void> {
+    const theme = document.documentElement.getAttribute('data-theme') ?? 'light';
+
+    const response = await api.get(`/summary/${summaryId}/${documentName}/pdf`, {
+        params: { theme },
+        responseType: 'blob',
+    });
+
+    const url = URL.createObjectURL(new Blob([response.data]));
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${documentName}.pdf`;
+    a.click();
+
+    URL.revokeObjectURL(url);
+}

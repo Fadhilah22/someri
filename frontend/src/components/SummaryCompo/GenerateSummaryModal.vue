@@ -1,12 +1,30 @@
 <template>
 <div class="overlay">
     <div class="modal">
-        <h2>Generate Summary</h2>
+        <div class="header">
+            <h2>Generate Summary</h2>
 
-        <div class="field">
-            <label>Document ID</label>
+            <button
+                class="close-btn"
+                @click="$emit('close')"
+            >
+                ✕
+            </button>
+        </div>
 
-            <input v-model="documentId">
+        <div class="field select-field">
+            <label>Document</label>
+
+            <select v-model="documentId">
+                <option value="" disabled>Select a document</option>
+                <option
+                    v-for="doc in documents"
+                    :key="doc.id"
+                    :value="doc.id"
+                >
+                    {{ doc.filename }}
+                </option>
+            </select>
         </div>
 
         <div class="field select-field">
@@ -14,7 +32,7 @@
 
             <select v-model="style">
                 <option value="systematic">Systematic</option>
-                <option value="biteSize">Bite-size</option>
+                <option value="biteSize">BiteSize</option>
                 <option value="chronological">Chronological</option>
             </select>
         </div>
@@ -63,7 +81,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import { getDocuments } from '../../services/documents';
 
 const languages = [
     'English',
@@ -93,12 +112,20 @@ const emit = defineEmits([
     'generate'
 ])
 
+const documents = ref<{ id: string; filename: string }[]>([])
+
 const documentId = ref('')
-const style = ref('academic')
+const style = ref('systematic')
 const length = ref('medium')
-const language = ref('english')
+const language = ref('English')
+
+onMounted(async () => {
+    documents.value = await getDocuments()
+})
 
 function generate() {
+    if (!documentId.value) return
+
     emit('generate', {
         documentId: documentId.value,
         style: style.value,
@@ -217,5 +244,18 @@ function generate() {
 
 .secondary {
     background: var(--color-background);
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-bottom: 12px;
+}
+
+.header h2 {
+    margin: 0;
+    color: var(--color-text);
 }
 </style>

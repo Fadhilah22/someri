@@ -4,6 +4,8 @@
             v-for="summary in summaries"
             :key="summary.id"
             :summary="summary"
+            @click="$emit('select', summary)"
+            @deleted="$emit('deleted', $event)"
         />
     </div>
 </template>
@@ -14,6 +16,11 @@ import SummaryCard from './SummaryCard.vue'
 
 defineProps<{
     summaries: SummaryDisplay[]
+}>()
+
+defineEmits<{
+    (e: 'select', summary: SummaryDisplay): void
+    (e: 'deleted', id: string): void
 }>()
 </script>
 

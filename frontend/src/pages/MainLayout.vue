@@ -18,14 +18,6 @@
         <RouterLink to="/Summaries" class="menu-item" active-class="active">
           Summaries
         </RouterLink>
-
-        <RouterLink to="/History" class="menu-item" active-class="active">
-          History
-        </RouterLink>
-
-        <RouterLink to="/settings" class="menu-item" active-class="active">
-          Settings
-        </RouterLink>
       </nav>
     </aside>
 

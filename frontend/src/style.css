@@ -331,3 +331,125 @@ code {
     border-right-color: var(--border);
   }
 }
+
+/* @media print {
+    body * {
+        visibility: hidden;
+    }
+
+    .print-content,
+    .print-content * {
+        visibility: visible;
+    }
+
+    .print-content {
+        position: absolute;
+        left: 0;
+        top: 0;
+
+        width: 100%;
+    }
+} */
+
+@media print {
+    @page {
+        margin: 0;
+    }
+    @page :first {
+        padding-top: 0;
+    }
+
+    html, body {
+        height: auto !important;
+        overflow: visible !important;
+        background: var(--color-surface) !important;
+        color: var(--color-text) !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    /* Hide everything from app root down */
+    #app,
+    .layout,
+    main.content {
+        display: block !important;
+        background: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        min-height: 0 !important;
+    }
+
+    /* Hide all direct children of these containers... */
+    .layout > *,
+    main.content > * {
+        display: none !important;
+    }
+
+    /* ...except the overlay chain */
+    .layout > main.content {
+        display: block !important;
+    }
+
+    main.content > .overlay {
+        display: block !important;
+        position: static !important;
+        background: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    /* Strip sidebar, theme toggle, hero, grid cards */
+    .layout > aside,
+    .layout > button {
+        display: none !important;
+    }
+
+    .modal {
+        display: block !important;
+        position: static !important;
+        width: 100% !important;
+        max-width: none !important;
+        max-height: none !important;
+        height: auto !important;
+        overflow: visible !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        /* padding: 20px !important; */
+        padding: 32px !important;
+        background: var(--color-surface) !important;
+    }
+
+    .print-content {
+        width: 100%;
+        overflow: visible !important;
+        padding-top: 24px;  /* add this */
+    }
+
+    .actions,
+    .header,
+    .close-btn,
+    .date {
+        display: none !important;
+    }
+
+    .content,
+    .content * {
+        overflow: visible !important;
+        max-height: none !important;
+        height: auto !important;
+    }
+
+    .content {
+        padding-top: 16px;
+    }
+
+    table, pre, blockquote {
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+
+    h1, h2, h3 {
+        page-break-after: avoid;
+        break-after: avoid;
+    }
+}

@@ -6,7 +6,7 @@ export class CreateSummaryDto {
     @IsString()
     DocumentId?: string;
 
-    @IsEnum(['systematic', 'bite-size', 'chronological'])
+    @IsEnum(['systematic', 'biteSize', 'chronological'])   
     style?: string;
 
     @IsEnum(['short', 'medium', 'long'])
