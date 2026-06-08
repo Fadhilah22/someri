@@ -2,6 +2,7 @@
 import { 
     Body, 
     Controller, 
+    Delete, 
     FileTypeValidator, 
     Get, 
     ParseFilePipe, 
