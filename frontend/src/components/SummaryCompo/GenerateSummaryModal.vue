@@ -7,6 +7,7 @@
             <button
                 class="close-btn"
                 @click="$emit('close')"
+                :disabled="isLoading"
             >
                 ✕
             </button>
@@ -14,8 +15,7 @@
 
         <div class="field select-field">
             <label>Document</label>
-
-            <select v-model="documentId">
+            <select v-model="documentId" :disabled="isLoading">
                 <option value="" disabled>Select a document</option>
                 <option
                     v-for="doc in documents"
@@ -29,8 +29,7 @@
 
         <div class="field select-field">
             <label>Style</label>
-
-            <select v-model="style">
+            <select v-model="style" :disabled="isLoading">
                 <option value="systematic">Systematic</option>
                 <option value="biteSize">BiteSize</option>
                 <option value="chronological">Chronological</option>
@@ -39,8 +38,7 @@
 
         <div class="field select-field">
             <label>Length</label>
-
-            <select v-model="length">
+            <select v-model="length" :disabled="isLoading">
                 <option value="short">Short</option>
                 <option value="medium">Medium</option>
                 <option value="long">Long</option>
@@ -49,8 +47,7 @@
 
         <div class="field select-field">
             <label>Language</label>
-
-            <select v-model="language">
+            <select v-model="language" :disabled="isLoading">
                 <option
                     v-for="lang in languages"
                     :key="lang"
@@ -65,6 +62,7 @@
             <button
                 class="secondary"
                 @click="$emit('close')"
+                :disabled="isLoading"
             >
                 Cancel
             </button>
@@ -72,8 +70,10 @@
             <button
                 class="primary"
                 @click="generate"
+                :disabled="isLoading"
             >
-                Generate
+                <span v-if="isLoading" class="spinner" />
+                {{ isLoading ? 'Generating...' : 'Generate' }}
             </button>
         </div>
     </div>
@@ -84,36 +84,20 @@
 import { ref, onMounted } from 'vue'
 import { getDocuments } from '../../services/documents';
 
+const props = defineProps<{
+    isLoading?: boolean
+}>()
+
 const languages = [
-    'English',
-    'Mandarin Chinese',
-    'Hindi',
-    'Spanish',
-    'French',
-    'Arabic',
-    'Bengali',
-    'Portuguese',
-    'Russian',
-    'Urdu',
-    'Indonesian',
-    'German',
-    'Japanese',
-    'Korean',
-    'Turkish',
-    'Vietnamese',
-    'Italian',
-    'Thai',
-    'Polish',
-    'Dutch',
+    'English', 'Mandarin Chinese', 'Hindi', 'Spanish', 'French',
+    'Arabic', 'Bengali', 'Portuguese', 'Russian', 'Urdu',
+    'Indonesian', 'German', 'Japanese', 'Korean', 'Turkish',
+    'Vietnamese', 'Italian', 'Thai', 'Polish', 'Dutch',
 ]
 
-const emit = defineEmits([
-    'close',
-    'generate'
-])
+const emit = defineEmits(['close', 'generate'])
 
 const documents = ref<{ id: string; filename: string }[]>([])
-
 const documentId = ref('')
 const style = ref('systematic')
 const length = ref('medium')
@@ -124,7 +108,7 @@ onMounted(async () => {
 })
 
 function generate() {
-    if (!documentId.value) return
+    if (!documentId.value || props.isLoading) return
 
     emit('generate', {
         documentId: documentId.value,
@@ -136,6 +120,7 @@ function generate() {
 </script>
 
 <style scoped>
+
 .overlay {
     position: fixed;
     inset: 0;
@@ -257,5 +242,33 @@ function generate() {
 .header h2 {
     margin: 0;
     color: var(--color-text);
+}
+
+.primary:disabled,
+.secondary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.primary {
+    background: var(--color-primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.spinner {
+    width: 14px;
+    height: 14px;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    flex-shrink: 0;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
 }
 </style>

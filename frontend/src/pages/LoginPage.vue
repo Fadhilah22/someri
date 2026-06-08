@@ -9,6 +9,7 @@
           }"
         >
         <div class="auth-header">
+          <img :src="logo" alt="Someri Logo" class="logo" />
           <h1>Someri</h1>
           <p>Welcome back</p>
         </div>
@@ -60,6 +61,7 @@
 </template>
 
 <script setup lang="ts">
+import logo from '@/assets/logo.svg';
 import GridBackground from '../components/ui/GridBackground.vue';
 import { ref } from 'vue';
 import { useAuthStore } from '../stores/auth';
@@ -100,6 +102,11 @@ function handleGlow(e: MouseEvent) {
 </script>
 
 <style scoped>
+
+.logo {
+    width: 256px;
+    height: auto;
+}
 
 .theme-toggle {
   position: fixed;
@@ -148,6 +155,9 @@ function handleGlow(e: MouseEvent) {
 .auth-header {
   text-align: center;
   margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .auth-header h1 {

@@ -9,7 +9,7 @@
 
                 <div class="actions">
                     <button @click="downloadPdf">
-                        Download PDF
+                        📄
                     </button>
                 
                     <button @click="$emit('close')">
@@ -108,6 +108,15 @@ async function downloadPdf() {
     padding: 24px;
 
     box-shadow: var(--shadow);
+}
+
+.actions {
+    display: flex;
+    gap: 0.75rem; /* adjust as needed */
+}
+
+.actions button {
+    cursor: pointer;
 }
 
 .header {

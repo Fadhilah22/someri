@@ -2,8 +2,9 @@
   <div class="layout">
     <!-- Sidebar -->
     <aside class="sidebar">
-      <div class="logo">
-        <h2>Someri</h2>
+      <div class="logo-layout">
+        <!-- <h2>Someri</h2> -->
+        <img :src="theme.isDark ? logoTextWhite : logoText" alt="Someri Logo" class="logo" />
       </div>
 
       <nav class="menu">
@@ -37,11 +38,14 @@
 </template>
 
 <script setup lang="ts">
+import logoText from '@/assets/logoText.svg';
+import logoTextWhite from '@/assets/logoText-white.svg';
 import { RouterLink, RouterView } from 'vue-router'
 import { useThemeStore } from '../stores/theme'
 
 const theme = useThemeStore()
 </script>
+
 
 <style scoped>
 * {
@@ -67,8 +71,17 @@ const theme = useThemeStore()
   flex-direction: column;
 }
 
-.logo {
+.logo-layout {
   margin-bottom: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.logo {
+  width: auto;
+  height: 50px;
 }
 
 .logo h2 {
