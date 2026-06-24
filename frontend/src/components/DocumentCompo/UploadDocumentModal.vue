@@ -1,53 +1,27 @@
 <template>
-<div class="overlay">
-    <div class="modal">
-        <div class="header">
-            <h2>Upload Document</h2>
-
-            <button
-                class="close-btn"
-                @click="$emit('close')"
-            >
-                ✕
-            </button>
-        </div>
-
-        <div class="field">
-            <label>Document Name</label>
-
-            <input
-                v-model="documentName"
-                placeholder="Optional"
-            >
-        </div>
-
-        <div class="field">
-            <label>PDF File</label>
-
-            <input
-                type="file"
-                accept=".pdf"
-                @change="handleFile"
-            >
+    <div class="overlay">
+        <div class="modal">
+            <div class="header">
+                <h2>Upload Document</h2>
+                <button class="close-btn" @click="$emit('close')">✕</button>
             </div>
 
-        <div class="actions">
-            <button
-                class="secondary"
-                @click="$emit('close')"
-            >
-                Cancel
-            </button>
+            <div class="field">
+                <label>Document Name</label>
+                <input v-model="documentName" placeholder="Optional">
+            </div>
 
-            <button
-                class="primary"
-                @click="upload"
-            >
-                Upload
-            </button>
+            <div class="field">
+                <label>PDF File</label>
+                <input type="file" accept=".pdf" @change="handleFile">
+            </div>
+
+            <div class="actions">
+                <button class="secondary" @click="$emit('close')">Cancel</button>
+                <button class="primary" @click="upload">Upload</button>
+            </div>
         </div>
     </div>
-</div>
 </template>
 
 <script setup lang="ts">
